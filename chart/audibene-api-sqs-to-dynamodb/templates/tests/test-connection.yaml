@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "audibene-api-sqs-to-dynamodb.fullname" . }}-test-connection"
+  labels:
+    {{- include "audibene-api-sqs-to-dynamodb.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "audibene-api-sqs-to-dynamodb.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

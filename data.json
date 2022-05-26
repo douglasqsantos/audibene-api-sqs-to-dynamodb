@@ -1,0 +1,10 @@
+[
+  {
+    "transactionType": "credit_card",
+    "amount" : "€100"
+  },
+  {
+    "transactionType": "paypal",
+    "amount" : "€150"
+  }
+]

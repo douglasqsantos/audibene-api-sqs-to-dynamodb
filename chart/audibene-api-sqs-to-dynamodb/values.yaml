@@ -1,0 +1,143 @@
+# Default values for audibene-api-sqs-to-dynamodb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: douglasqsantos/audibene-api-sqs-to-dynamodb
+  pullPolicy: Always
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources:
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+secrets:
+  name: "api-secret-keys"
+  AWS_ACCESS_KEY_ID: ""
+  AWS_SECRET_ACCESS_KEY: ""
+  AWS_DEFAULT_REGION: "us-east-1"
+  AWS_SQS_NAME: "audibene-sqs"
+  FLASK_HOST: "0.0.0.0"
+  FLASK_PORT: "5001"
+  FLASK_DEBUG: "True"
+  DYNAMODB_CREDIT_CARD_TABLE: "CreditCard"
+  DYNAMODB_PAYPAL_TABLE: "PayPal"
+
+# Environment Variables
+env:
+  - name: AWS_ACCESS_KEY_ID
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: AWS_ACCESS_KEY_ID
+  - name: AWS_SECRET_ACCESS_KEY
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: AWS_SECRET_ACCESS_KEY
+  - name: AWS_DEFAULT_REGION
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: AWS_DEFAULT_REGION
+  - name: AWS_SQS_NAME
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: AWS_SQS_NAME
+  - name: FLASK_HOST
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: FLASK_HOST
+  - name: FLASK_PORT
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: FLASK_PORT
+  - name: FLASK_DEBUG
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: FLASK_DEBUG
+  - name: DYNAMODB_CREDIT_CARD_TABLE
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: DYNAMODB_CREDIT_CARD_TABLE
+  - name: DYNAMODB_PAYPAL_TABLE
+    valueFrom:
+      secretKeyRef:
+        name: api-secret-keys
+        key: DYNAMODB_PAYPAL_TABLE
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
